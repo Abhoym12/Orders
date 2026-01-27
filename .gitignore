@@ -1,0 +1,80 @@
+# ===================
+# .NET Build Outputs
+# ===================
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# ===================
+# IDE & Editor Files
+# ===================
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+*.DotSettings.user
+
+# ===================
+# NuGet
+# ===================
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ===================
+# Test Results
+# ===================
+**/TestResults/
+*.trx
+**/coverage/
+*.coverage
+*.coveragexml
+
+# ===================
+# Postman Documentation
+# ===================
+docs/postman/
+docs/POSTMAN_TESTING_GUIDE.md
+
+# ===================
+# Architecture Docs
+# ===================
+docs/ARCHITECTURE.md
+
+# ===================
+# OS Generated Files
+# ===================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.AppleDouble
+.LSOverride
+
+# ===================
+# Logs
+# ===================
+*.log
+logs/
+
+# ===================
+# Redis
+# ===================
+dump.rdb
+
+# ===================
+# Backup & Temp Files
+# ===================
+*~
+*.bak
+*.swp
+*.tmp
+scripts/04-useful-queries.sql
+scripts/03-sample-data.sql

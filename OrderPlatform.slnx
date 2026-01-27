@@ -1,0 +1,36 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/ApiGateway/">
+    <Project Path="src/ApiGateway/ApiGateway/ApiGateway.csproj" />
+  </Folder>
+  <Folder Name="/src/IdentityService/">
+    <Project Path="src/IdentityService/IdentityService/IdentityService.csproj" />
+  </Folder>
+  <Folder Name="/src/OrderProcessor/">
+    <Project Path="src/OrderProcessor/OrderProcessor/OrderProcessor.csproj" />
+  </Folder>
+  <Folder Name="/src/OrderService/" />
+  <Folder Name="/src/OrderService/OrderService.Api/">
+    <Project Path="src/OrderService/OrderService.Api/OrderService.Api/OrderService.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/OrderService/OrderService.DataAccess/">
+    <Project Path="src/OrderService/OrderService.DataAccess/OrderService.DataAccess/OrderService.DataAccess.csproj" />
+  </Folder>
+  <Folder Name="/src/OrderService/OrderService.Engine/">
+    <Project Path="src/OrderService/OrderService.Engine/OrderService.Engine/OrderService.Engine.csproj" />
+  </Folder>
+  <Folder Name="/src/OrderService/OrderService.Manager/">
+    <Project Path="src/OrderService/OrderService.Manager/OrderService.Manager/OrderService.Manager.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/" />
+  <Folder Name="/src/Shared/Contracts/">
+    <Project Path="src/Shared/Contracts/Shared.Contracts/Shared.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/Messaging/">
+    <Project Path="src/Shared/Messaging/Shared.Messaging/Shared.Messaging.csproj" />
+  </Folder>
+  <Folder Name="/src/Tests/">
+    <Project Path="tests/OrderService.Engine.Tests/OrderService.Engine.Tests.csproj" />
+    <Project Path="tests/OrderService.Manager.Tests/OrderService.Manager.Tests.csproj" />
+  </Folder>
+</Solution>

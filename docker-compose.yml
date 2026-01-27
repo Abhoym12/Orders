@@ -1,0 +1,132 @@
+version: "3.8"
+
+services:
+  # Infrastructure Services
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - order-platform
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - order-platform
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - order-platform
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - order-platform
+
+  # Application Services
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/ApiGateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__Key=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+      - Jwt__Issuer=OrderPlatform
+      - Jwt__Audience=OrderPlatform
+    depends_on:
+      - identity-service
+      - order-service
+    networks:
+      - order-platform
+
+  identity-service:
+    build:
+      context: .
+      dockerfile: src/IdentityService/Dockerfile
+    container_name: identity-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__SqlServer=Server=sql-server;Database=IdentityDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+      - Jwt__Key=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+      - Jwt__Issuer=OrderPlatform
+      - Jwt__Audience=OrderPlatform
+    depends_on:
+      - sql-server
+    networks:
+      - order-platform
+
+  order-service:
+    build:
+      context: .
+      dockerfile: src/OrderService/Dockerfile
+    container_name: order-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__SqlServer=Server=sql-server;Database=OrderDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+      - ConnectionStrings__Redis=redis:6379
+      - Kafka__BootstrapServers=kafka:9092
+      - Kafka__GroupId=order-service
+      - Jwt__Key=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+      - Jwt__Issuer=OrderPlatform
+      - Jwt__Audience=OrderPlatform
+    depends_on:
+      - sql-server
+      - redis
+      - kafka
+    networks:
+      - order-platform
+
+  order-processor:
+    build:
+      context: .
+      dockerfile: src/OrderProcessor/Dockerfile
+    container_name: order-processor
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - ConnectionStrings__SqlServer=Server=sql-server;Database=OrderDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+      - ConnectionStrings__Redis=redis:6379
+      - Kafka__BootstrapServers=kafka:9092
+      - Kafka__GroupId=order-processor
+      - OrderProcessor__PollingIntervalMinutes=5
+      - OrderProcessor__BatchSize=100
+    depends_on:
+      - sql-server
+      - redis
+      - kafka
+    networks:
+      - order-platform
+
+volumes:
+  sqlserver-data:
+
+networks:
+  order-platform:
+    driver: bridge

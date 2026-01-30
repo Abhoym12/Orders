@@ -11,6 +11,7 @@ public class Order
     public DateTime CreatedAt { get; internal set; }
     public DateTime? UpdatedAt { get; internal set; }
     public decimal TotalAmount { get; internal set; }
+    public decimal AmountPaid { get; internal set; }
 
     private List<OrderItem> _items = new();
     public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();

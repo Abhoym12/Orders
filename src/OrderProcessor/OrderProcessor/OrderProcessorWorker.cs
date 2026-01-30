@@ -59,6 +59,8 @@ public class OrderProcessorWorker : BackgroundService
             _settings.BatchSize,
             cancellationToken);
 
+        pendingOrders = pendingOrders.Where(x => x.TotalAmount == x.AmountPaid).ToList();
+
         if (pendingOrders.Count == 0)
         {
             _logger.LogInformation("No pending orders to process");
